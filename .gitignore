@@ -1,16 +1,23 @@
 node_modules
 
-.cache
-.vercel
-.output
+/.cache
+/build
+.env
+/.vercel
+/.output
 
 public/build
 api/_build
 
 # app specific exceptions
 *.log
+coverage/
 env.sh
+env.ps1
 *firebase-adminsdk*
-tester.tsx
 app/sessions/*
-__tests__/models/
+
+firebase-account-key.json
+
+#misc
+.DS_Store

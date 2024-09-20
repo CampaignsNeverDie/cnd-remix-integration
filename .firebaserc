@@ -1,5 +1,6 @@
 {
   "projects": {
-    "development": "demo-remix-app"
+    "default": "demo-project",
+    "prod": "real-estate-crm-e3f51"
   }
 }

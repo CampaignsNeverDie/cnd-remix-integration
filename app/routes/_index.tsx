@@ -2,22 +2,31 @@ import { useRef } from 'react';
 import { Form, useActionData, useLoaderData, Link } from '@remix-run/react';
 import { json } from '@remix-run/node';
 import { auth } from '~/auth.server';
-import type { ActionFunction, LoaderFunction } from '@remix-run/node';
+import type {
+  ActionFunction,
+  ActionFunctionArgs,
+  LoaderFunction,
+  MetaFunction,
+} from '@remix-run/node';
 import type { AppError } from '~/util';
+import { AuthUser } from '~/auth.server/auth-types';
 
-export let meta = () => {
-  return {
-    title: 'Home Page',
-  };
+export const meta: MetaFunction = () => {
+  return [
+    { title: 'Home Page' },
+    { name: 'description', content: 'Remix with Firebase Auth Demo' },
+  ];
 };
 
-export const action: ActionFunction = async ({ request }) => {
+export const action: ActionFunction = async ({
+  request,
+}: ActionFunctionArgs) => {
   try {
     const form = await request.formData();
 
     // TODO: implement proper form validation
-    const email: any = form.get('email');
-    const password: any = form.get('password');
+    const email = form.get('email') as string;
+    const password = form.get('password') as string;
 
     // TODO: form validation
     if (!email || email.trim() === '') {
@@ -61,8 +70,8 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export default function Index() {
-  const actionError = useActionData();
-  const user = useLoaderData();
+  const actionError = useActionData<typeof action>() as AppError;
+  const user: AuthUser = useLoaderData<typeof loader>();
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
 
@@ -71,16 +80,17 @@ export default function Index() {
       <main>
         <h2>Home Page</h2>
         <p>Everyone can view the home page.</p>
-        {(user && (
+        {user ? (
           <>
             <p>
-              Hello {user.name}, you can now view the <Link to="/protected">protected page.</Link>
+              Hello {user.name}, you can now view the{' '}
+              <Link to="/protected">protected page.</Link>
             </p>
             <Form method="post" action="/logout">
               <button>Logout</button>
             </Form>
           </>
-        )) || (
+        ) : (
           <section>
             <Form className="remix__form" method="post">
               <h3>Login Form</h3>
@@ -88,7 +98,12 @@ export default function Index() {
               <input type="text" id="email" name="email" ref={emailRef} />
               <br />
               <label htmlFor="email">Password:</label>
-              <input type="password" id="password" name="password" ref={passwordRef} />
+              <input
+                type="password"
+                id="password"
+                name="password"
+                ref={passwordRef}
+              />
               <br />
               <button type="submit">Login</button>
               {actionError?.errorCode && (

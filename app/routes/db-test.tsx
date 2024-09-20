@@ -16,8 +16,8 @@ export const loader: LoaderFunction = async ({ request }) => {
       break;
     case 'read':
       // geta a user by username or id
-      // return json(await users.getByUsername('admin@example.com'));
-      return json(await users.getById('Wv3jQLi5CUUlsBfeiJLOjTta5wWP'));
+      return json(await users.getByUsername('test@example.com'));
+      // return json(await users.getById('SOME_ID_HERE'));
       break;
     case 'update':
       // update user
